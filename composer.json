@@ -1,0 +1,32 @@
+{
+    "autoload": {
+        "psr-0": { "": "src/" }
+    },
+
+    "require": {
+        "php": ">=5.4",
+        "symfony/console": "~2.7",
+        "symfony/event-dispatcher": "~2.2",
+        "doctrine/annotations": "~1.1"
+
+    },
+
+    "require-dev": {
+        "phpunit/phpunit": "~4.4"
+    },
+
+    "scripts": {
+
+    },
+
+    "config": {
+        "bin-dir": "bin"
+    },
+
+    "extra": {
+        "symfony-app-dir": "app",
+        "symfony-bin-dir": "bin",
+        "symfony-var-dir": "var"
+    }
+
+}

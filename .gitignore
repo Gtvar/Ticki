@@ -1,0 +1,12 @@
+/bin/phpunit
+
+# Composer
+/composer.phar
+/vendor/
+
+# Other directories
+.DS_Store
+/.idea/
+/atlassian-ide-plugin.xml
+/.project
+
