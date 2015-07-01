@@ -7,9 +7,9 @@ use Ticki\Core\Model\Board;
 use Ticki\Core\Model\Cell;
 
 /**
- * Simple strategy
+ * Some more hard
  */
-class SimpleStrategy implements StrategyInterface
+class IntelligentStrategy implements StrategyInterface
 {
     /**
      * Just put first free cell on board
@@ -21,7 +21,7 @@ class SimpleStrategy implements StrategyInterface
 		    ExceptionFactory::runtime("Not have free cells");
 	    }
 
-        $position = $free[0];
+        $position = $free[rand(0, count($free) - 1)];
 
         switch ($type) {
             case Cell::TIC:
@@ -41,6 +41,6 @@ class SimpleStrategy implements StrategyInterface
      */
     public function name()
     {
-        return 'simple';
+        return 'intelligent';
     }
 }

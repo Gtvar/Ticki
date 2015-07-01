@@ -22,7 +22,9 @@ class StrategyManager
     public function __construct()
     {
         $strategy = new SimpleStrategy();
+        $this->strategies[$strategy->name()] = $strategy;
 
+	    $strategy = new IntelligentStrategy();
         $this->strategies[$strategy->name()] = $strategy;
     }
 
