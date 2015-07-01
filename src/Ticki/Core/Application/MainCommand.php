@@ -79,7 +79,7 @@ class MainCommand extends Command
 						break;
 
 					case TicTac::STAGE_YOU_LOST :
-						$output->writeln("You Win!");
+						$output->writeln("You Lost!");
 
 						return;
 						break;

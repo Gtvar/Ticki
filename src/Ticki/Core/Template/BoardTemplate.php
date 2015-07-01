@@ -22,7 +22,7 @@ class BoardTemplate
         $set = $board->getSet();
 
         foreach ($set as $pos => $value) {
-	        $template = $pos > 9 ? " %s " : "  %s ";
+	        $template = $pos <= 9 || $value !== null ? "  %s " : " %s ";
             $line .= sprintf($template, $value ?: $pos);
 
             if ($pos % $board->getSideCount() == 0) {

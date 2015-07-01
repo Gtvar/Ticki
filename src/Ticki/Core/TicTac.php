@@ -78,17 +78,7 @@ class TicTac
 	    $this->board->checkPosition($position);
         $this->step($this->myType, $position);
 
-        if (!$this->board->isFinish()) {
-            return self::STAGE_GAME;
-        }
-
-        if ($this->board->getWinnerType() === $this->myType) {
-            return self::STAGE_YOU_WIN;
-        } elseif ($this->board->getWinnerType() === $this->oppositeType) {
-            return self::STAGE_YOU_LOST;
-        }
-
-        return self::STAGE_DEAD_HEAT;
+	    return $this->checkFinish();
     }
 
     /**
@@ -118,6 +108,10 @@ class TicTac
         // Human step
         $this->board->addCell($cell);
 
+	    if ($this->board->isFinish()) {
+		    return;
+	    }
+
         // Strategy step
         $cell = $this->strategy->getCell($this->board, $this->oppositeType);
         $this->board->addCell($cell);
@@ -146,4 +140,24 @@ class TicTac
 
         return $this->strategyManager;
     }
+
+	/**
+	 * Check for game finish
+	 *
+	 * @return int
+	 */
+	protected function checkFinish()
+	{
+		if (!$this->board->isFinish()) {
+			return self::STAGE_GAME;
+		}
+
+		if ($this->board->getWinnerType() === $this->myType) {
+			return self::STAGE_YOU_WIN;
+		} elseif ($this->board->getWinnerType() === $this->oppositeType) {
+			return self::STAGE_YOU_LOST;
+		}
+
+		return self::STAGE_DEAD_HEAT;
+	}
 }
