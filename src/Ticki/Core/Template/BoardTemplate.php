@@ -22,7 +22,8 @@ class BoardTemplate
         $set = $board->getSet();
 
         foreach ($set as $pos => $value) {
-            $line .= sprintf(" %s ", $value ?: $pos);
+	        $template = $pos > 9 ? " %s " : "  %s ";
+            $line .= sprintf($template, $value ?: $pos);
 
             if ($pos % $board->getSideCount() == 0) {
                 $out .= $line . "\r\n";

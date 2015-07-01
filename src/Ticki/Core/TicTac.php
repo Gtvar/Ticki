@@ -52,13 +52,16 @@ class TicTac
      */
     public function __construct($strategy, $sideCount, $myType)
     {
+	    if (!in_array($myType, array(Cell::TIC, Cell::TAC))) {
+		    throw ExceptionFactory::wrongCellException($myType);
+	    }
+
+	    if (!in_array($sideCount, Board::$availableSideCount)) {
+		    throw ExceptionFactory::runtime("Wrong side number");
+	    }
+
         $this->strategy = $this->getStrategyManager()->getByName($strategy);
         $this->board = new Board($sideCount);
-
-        if (!in_array($myType, array(Cell::TIC, Cell::TAC))) {
-            throw ExceptionFactory::wrongCellException($myType);
-        }
-
         $this->myType = $myType;
         $this->oppositeType = Cell::getOppositeType($myType);
     }
@@ -72,6 +75,7 @@ class TicTac
      */
     public function game($position)
     {
+	    $this->board->checkPosition($position);
         $this->step($this->myType, $position);
 
         if (!$this->board->isFinish()) {

@@ -23,4 +23,9 @@ class ExceptionFactory
     {
         return new UnknownStrategyException(sprintf("Unknown strategy: %s", $name));
     }
+
+	public static function runtime($error)
+	{
+		return new RuntimeException($error);
+	}
 }

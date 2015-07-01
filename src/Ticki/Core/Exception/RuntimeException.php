@@ -2,7 +2,7 @@
 
 namespace Ticki\Core\Exception;
 
-abstract class Exception extends \Exception
+class RuntimeException extends Exception
 {
 
 }

@@ -2,6 +2,7 @@
 
 namespace Ticki\Core\Strategy;
 
+use Ticki\Core\Exception\ExceptionFactory;
 use Ticki\Core\Model\Board;
 use Ticki\Core\Model\Cell;
 
@@ -16,6 +17,9 @@ class SimpleStrategy implements StrategyInterface
     public function getCell(Board $board, $type)
     {
         $free = $board->getFreeCell();
+	    if (empty($free)) {
+		    ExceptionFactory::runtime("Not have free cells");
+	    }
         $position = $free[0];
 
         switch ($type) {

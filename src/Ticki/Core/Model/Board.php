@@ -9,7 +9,9 @@ use Ticki\Core\Exception\ExceptionFactory;
  */
 class Board
 {
-    const DEFAULT_SIDE = 3;
+    const DEFAULT_SIDE_SIZE = 3;
+
+	public static $availableSideCount = array(3, 5, 9);
 
     /**
      * Count one side
@@ -149,4 +151,18 @@ class Board
 
         return $free;
     }
+
+	/**
+	 * Check position for available
+	 *
+	 * @param $position
+	 *
+	 * @throws \Ticki\Core\Exception\RuntimeException
+	 */
+	public function checkPosition($position)
+	{
+		if(!in_array($position, $this->getFreeCell())) {
+			throw ExceptionFactory::runtime("Wrong position");
+		}
+	}
 }
