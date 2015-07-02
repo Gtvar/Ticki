@@ -96,4 +96,4 @@ class MainCommand extends Command
 			$output->writeln(sprintf("Error happend <error>%s</error>", $e->getMessage()));
 		}
 	}
-} 
+}

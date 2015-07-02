@@ -1,4 +1,5 @@
 /bin/phpunit
+/bin/behat
 
 # Composer
 /composer.phar

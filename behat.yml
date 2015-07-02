@@ -1,0 +1,10 @@
+default:
+    suites:
+        console:
+            paths: [ %paths.base%/features/console ]
+            contexts:
+                - CommandContext
+            filters:
+                tags: '@console'
+
+
