@@ -11,7 +11,12 @@ class Board
 {
     const DEFAULT_SIDE_SIZE = 3;
 
-	public static $availableSideCount = array(3, 5, 9);
+    /**
+     * 2n + 1, n = 0, 1, 2, 4 ... 2^k
+     *
+     * @var array
+     */
+    public static $availableSideCount = array(3, 5, 9);
 
     /**
      * Count one side
@@ -29,7 +34,15 @@ class Board
      *
      * @var array
      */
-    private $set = array();
+    private $kitCells = array();
+
+    /**
+     * How more need cell in one line for win.
+     * Default equals to sideCount
+     *
+     * @var int
+     */
+    private $winCount;
 
     /**
      * @var null|string
@@ -39,11 +52,13 @@ class Board
     /**
      * Construct
      *
-     * @param Integer $sideCount
+     * @param int $sideCount
+     * @param int $winCount
      */
-    public function __construct($sideCount)
+    public function __construct($sideCount, $winCount = 0)
     {
         $this->sideCount = $sideCount;
+        $this->winCount = $winCount ?: $sideCount;
 
         $this->initialize();
     }
@@ -55,7 +70,7 @@ class Board
     {
         $count = $this->getCount();
         for ($i = 1; $i <= $count; $i++) {
-            $this->set[$i] = null;
+            $this->kitCells[$i] = null;
         }
     }
 
@@ -70,13 +85,13 @@ class Board
     }
 
     /**
-     * Get Set
+     * Get KitCells
      *
      * @return array
      */
-    public function getSet()
+    public function getKitCells()
     {
-        return $this->set;
+        return $this->kitCells;
     }
 
     /**
@@ -90,21 +105,31 @@ class Board
     }
 
     /**
+     * Get WinCount
+     *
+     * @return int
+     */
+    public function getWinCount()
+    {
+        return $this->winCount;
+    }
+
+    /**
      * Add cell only on free and exist cell
      *
      * @param Cell $cell
      */
     public function addCell(Cell $cell)
     {
-        if (!isset($this->set[$cell->getPosition()])) {
+        if (!isset($this->kitCells[$cell->getPosition()])) {
             ExceptionFactory::positionOutOfRangeException($cell->getPosition());
         }
 
-        if (!empty($this->set[$cell->getPosition()])) {
+        if (!empty($this->kitCells[$cell->getPosition()])) {
             ExceptionFactory::positionAlreadyExistException($cell->getPosition());
         }
 
-        $this->set[$cell->getPosition()] = $cell->getType();
+        $this->kitCells[$cell->getPosition()] = $cell;
     }
 
     /**
@@ -114,41 +139,40 @@ class Board
      */
     public function isFinish()
     {
-	    $set = $this->morfSet();
 	    $countSide = $this->getSideCount();
 
         for ($y = 1; $y <= $countSide; $y++) {
 	        // horizontal
-	        $count = $this->getCountByPositions($set, $this->getHorizontalPositions($y));
-	        $this->findWinner($count);
+            $winCount = $this->getWinCountByPositions($this->getHorizontalPositions($y));
+	        $this->checkWinner($winCount);
 	        if ($this->winnerType) {
 		        return true;
 	        }
 
 	        // vertical
-	        $count = $this->getCountByPositions($set, $this->getVerticalPositions($y));
-	        $this->findWinner($count);
+            $winCount = $this->getWinCountByPositions($this->getVerticalPositions($y));
+	        $this->checkWinner($winCount);
 	        if ($this->winnerType) {
 		        return true;
 	        }
         }
 
 	    // left bisector
-	    $count = $this->getCountByPositions($set, $this->getLeftBisectorPositions());
-	    $this->findWinner($count);
+        $winCount = $this->getWinCountByPositions($this->getLeftBisectorPositions());
+	    $this->checkWinner($winCount);
 	    if ($this->winnerType) {
 		    return true;
 	    }
 
 	    // right bisector
-	    $count = $this->getCountByPositions($set, $this->getRightBisectorPositions());
-	    $this->findWinner($count);
+	    $winCount = $this->getWinCountByPositions($this->getRightBisectorPositions());
+	    $this->checkWinner($winCount);
 	    if ($this->winnerType) {
 		    return true;
 	    }
 
 	    // All cells fill
-	    if (!in_array(null, $this->set)) {
+	    if (!in_array(null, $this->kitCells)) {
 		    return true;
 	    }
 
@@ -156,57 +180,39 @@ class Board
     }
 
 	/**
-	 * @param $set
 	 * @param $positions
 	 *
-	 * @return null|int
+	 * @return WinCount
 	 */
-	protected function getCountByPositions($set, $positions)
+	protected function getWinCountByPositions($positions)
 	{
-		$count = 0;
+		$set = $this->getKitCells();
+        $winCount = new WinCount();
 		foreach ($positions as $position) {
 			if ($set[$position] === null) {
-				return null;
-			}
-
-			$count += $set[$position];
-		}
-
-		return $count;
-	}
-
-	/**
-	 * @param $count
-	 */
-	protected function findWinner($count)
-	{
-		if ($count === 0) {
-			$this->winnerType = Cell::TIC;
-		} elseif ($count == $this->getSideCount()) {
-			$this->winnerType = Cell::TAC;
-		}
-	}
-
-	/**
-	 * Replace tic tac by zero or digit 1
-	 *
-	 * @return array
-	 */
-	protected function morfSet()
-	{
-		$set = array();
-		foreach ($this->set as $pos => $value) {
-			if ($value === null) {
-				$set[$pos] = null;
-
 				continue;
 			}
 
-			$set[$pos] = $value === Cell::TIC ? 0 : 1;
+            $winCount->addCell($set[$position]);
 		}
 
-		return $set;
+		return $winCount;
 	}
+
+    private function checkWinner(WinCount $winCount)
+    {
+        if ($winCount->getWinner() === null) {
+            return false;
+        }
+
+        if ($winCount->getWinnerCount() == $this->winCount) {
+            $this->winnerType = $winCount->getWinner();
+
+            return true;
+        }
+
+        return false;
+    }
 
 	/**
 	 * Get horizontal positions by line
@@ -295,7 +301,7 @@ class Board
     public function getFreeCell()
     {
         $free = array();
-        foreach ($this->set as $pos => $value) {
+        foreach ($this->kitCells as $pos => $value) {
             if ($value === null) {
                 $free[] = $pos;
             }

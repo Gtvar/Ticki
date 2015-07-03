@@ -59,7 +59,7 @@ class StrategyManager
     public function getByName($name)
     {
         if (!isset($this->strategies[$name])) {
-            throw ExceptionFactory::undefinedStrategy($name);
+            throw ExceptionFactory::undefinedStrategyException($name);
         }
 
         return $this->strategies[$name];

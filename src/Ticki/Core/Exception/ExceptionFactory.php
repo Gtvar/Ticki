@@ -2,6 +2,8 @@
 
 namespace Ticki\Core\Exception;
 
+use Ticki\Core\Model\Cell;
+
 class ExceptionFactory
 {
     public static function wrongCellException($type)
@@ -19,7 +21,7 @@ class ExceptionFactory
         return new PositionOutOfRangeException(sprintf("Position already exist: %s", $position));
     }
 
-    public static function undefinedStrategy($name)
+    public static function undefinedStrategyException($name)
     {
         return new UnknownStrategyException(sprintf("Unknown strategy: %s", $name));
     }

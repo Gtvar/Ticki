@@ -73,4 +73,26 @@ class BoardClass extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($board->isFinish());
 		$this->assertEquals(null, $board->getWinnerType());
 	}
+
+    /**
+     *   o   o   3   4   5
+         6   7   8   9  10
+        11  12  13  14  15
+        16   x   x   x  20
+        21  22  23  24  25
+     *
+     */
+    public function testNotFullLineByWin()
+    {
+        $type = Cell::TAC;
+        $board = new Board(5, 3);
+        $this->assertTrue(!$board->isFinish());
+
+        $board->addCell((new Cell(17, $type)));
+        $board->addCell((new Cell(18, $type)));
+        $board->addCell((new Cell(19, $type)));
+
+        $this->assertTrue($board->isFinish());
+        $this->assertEquals($type, $board->getWinnerType());
+    }
 }

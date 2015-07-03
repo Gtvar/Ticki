@@ -30,6 +30,7 @@ Feature: Use tic tac command
     Then After finish game i see text "You Win!"
     Then The command exit code should be 0
 
+    @test
   Scenario: Win bisector right
     When strategy is "simple"
     When I run "tic-tac-toe" command with interactive set: "3,5,7"

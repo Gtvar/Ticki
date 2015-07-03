@@ -19,11 +19,12 @@ class BoardTemplate
     public static function draw(Board $board)
     {
         $out = $line = '';
-        $set = $board->getSet();
+        $set = $board->getKitCells();
 
+        /** @var \Ticki\Core\Model\Cell $value */
         foreach ($set as $pos => $value) {
 	        $template = $pos <= 9 || $value !== null ? "  %s " : " %s ";
-            $line .= sprintf($template, $value ?: $pos);
+            $line .= sprintf($template, $value ? $value->getType() : $pos);
 
             if ($pos % $board->getSideCount() == 0) {
                 $out .= $line . "\r\n";
