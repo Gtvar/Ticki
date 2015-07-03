@@ -32,7 +32,8 @@ class MainCommand extends Command
 			->setDefinition(array(
 					new InputArgument('sideCount', InputArgument::OPTIONAL, sprintf("Count side of game. You can use one for those: %s", implode(", ", Board::$availableSideCount)), Board::DEFAULT_SIDE_SIZE),
 					new InputArgument('type', InputArgument::OPTIONAL, sprintf("Select type of your cell. You can use '%s' or '%s'", Cell::TIC, Cell::TAC), Cell::TAC),
-					new InputArgument('strategy', InputArgument::OPTIONAL, sprintf("Select strategy. You can use %s", implode(', ', $strategies)), 'intelligent')
+					new InputArgument('strategy', InputArgument::OPTIONAL, sprintf("Select strategy. You can use %s", implode(', ', $strategies)), 'intelligent'),
+                    new InputArgument('winCount', InputArgument::OPTIONAL, sprintf("How point need to win. Can be less or equal countSide: %s", implode(", ", Board::$availableSideCount)), Board::DEFAULT_SIDE_SIZE),
 				))
 			->setDescription('Tic tac toe game')
 		;
@@ -51,13 +52,14 @@ class MainCommand extends Command
 		$sideCount = $input->getArgument('sideCount');
 		$type = $input->getArgument('type');
 		$strategy = $input->getArgument('strategy');
+		$winCount = $input->getArgument('winCount');
 
 		/** @var \Symfony\Component\Console\Helper\DialogHelper $dialog */
 		$dialog = $this->getHelper('dialog');
 
 		try {
 
-			$game = new TicTac($strategy, $sideCount, $type);
+			$game = new TicTac($strategy, $sideCount, $type, $winCount);
 			$output->writeln(BoardTemplate::draw($game->getBoard()));
 
 			for (;;) {
@@ -73,19 +75,19 @@ class MainCommand extends Command
 
 				switch ($stage) {
 					case TicTac::STAGE_YOU_WIN :
-						$output->writeln("You Win!");
+						$output->writeln("<question>You Win!</question>");
 
 						return;
 						break;
 
 					case TicTac::STAGE_YOU_LOST :
-						$output->writeln("You Lost!");
+						$output->writeln("<question>You Lost!</question>");
 
 						return;
 						break;
 
 					case TicTac::STAGE_DEAD_HEAT :
-						$output->writeln("Game finish, but not have winner!");
+						$output->writeln("<question>Game finish, but not have winner!</question>");
 
 						return;
 						break;

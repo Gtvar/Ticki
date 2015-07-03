@@ -136,7 +136,6 @@ class Board
      * Check for board is finish
      *
      * @todo: check if no have winner before all cell fill
-     * @todo: check
      *
      * @return bool
      */
@@ -145,31 +144,23 @@ class Board
 	    $countSide = $this->getSideCount();
 
         for ($y = 1; $y <= $countSide; $y++) {
-	        // horizontal
-            $winCount = $this->getWinCountByPositions($this->getHorizontalPositions($y));
-	        $this->checkWinner($winCount);
+            $this->processPositions('Horizontal', $y);
 	        if ($this->winnerType) {
 		        return true;
 	        }
 
-	        // vertical
-            $winCount = $this->getWinCountByPositions($this->getVerticalPositions($y));
-	        $this->checkWinner($winCount);
+            $this->processPositions('Vertical', $y);
 	        if ($this->winnerType) {
 		        return true;
 	        }
         }
 
-	    // left bisector
-        $winCount = $this->getWinCountByPositions($this->getLeftBisectorPositions());
-	    $this->checkWinner($winCount);
+        $this->processPositions('LeftBisector');
 	    if ($this->winnerType) {
 		    return true;
 	    }
 
-	    // right bisector
-	    $winCount = $this->getWinCountByPositions($this->getRightBisectorPositions());
-	    $this->checkWinner($winCount);
+        $this->processPositions('RightBisector');
 	    if ($this->winnerType) {
 		    return true;
 	    }
@@ -180,6 +171,21 @@ class Board
 	    }
 
         return false;
+    }
+
+    /**
+     * Process one line
+     *
+     * @param $category
+     * @param null $line
+     *
+     */
+    protected function processPositions($category, $line = null)
+    {
+        $method = 'get' . $category . 'Positions';
+        $positions = $this->{$method}($line);
+        $winCount = $this->getWinCountByPositions($positions);
+        $this->checkWinner($winCount, $positions);
     }
 
 	/**
@@ -206,19 +212,44 @@ class Board
      * Check for we have winner
      *
      * @param WinCount $winCount
+     * @param $positions
      *
      * @return bool
      */
-    private function checkWinner(WinCount $winCount)
+    private function checkWinner(WinCount $winCount, $positions)
     {
         if ($winCount->getWinner() === null) {
             return false;
         }
 
         if ($winCount->getWinnerCount() == $this->winCount) {
-            $this->winnerType = $winCount->getWinner();
+            $winner = $winCount->getWinner();
 
-            return true;
+            // Check sequence for "at a stretch"
+            $count = 0;
+            foreach ($positions as $value) {
+                /** @var \Ticki\Core\Model\Cell $current */
+                $current = $this->kitCells[$value];
+                if ($current === null) {
+                    $count = 0;
+
+                    continue;
+                }
+
+                if ($current->getType() === $winner) {
+                    $count++;
+                } else {
+                    $count = 0;
+                }
+
+                if ($this->winCount == $count) {
+                    $this->winnerType = $winner;
+
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         return false;
