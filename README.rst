@@ -39,7 +39,7 @@ Testing
 .. code-block:: bash
 
     $ bin/phpunit
-    
+
     $ bin/behat
 
 

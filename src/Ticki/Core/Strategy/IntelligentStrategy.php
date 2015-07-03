@@ -9,31 +9,21 @@ use Ticki\Core\Model\Cell;
 /**
  * Some more hard
  */
-class IntelligentStrategy implements StrategyInterface
+class IntelligentStrategy extends AbstractStrategy
 {
     /**
-     * Just put first free cell on board
+     * More variant
+     *
+     * @param Board $board
+     * @param $type
+     *
+     * @return int
      */
-    public function getCell(Board $board, $type)
+    protected function getPosition(Board $board, $type)
     {
         $free = $board->getFreeCell();
-	    if (empty($free)) {
-		    ExceptionFactory::runtime("Not have free cells");
-	    }
 
-        $position = $free[rand(0, count($free) - 1)];
-
-        switch ($type) {
-            case Cell::TIC:
-                $cell = Cell::createTic($position);
-
-                break;
-            default :
-                $cell = Cell::createTac($position);
-
-        }
-
-        return $cell;
+        return $free[rand(0, count($free) - 1)];
     }
 
     /**
