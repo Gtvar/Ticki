@@ -2,8 +2,9 @@
 
 namespace Ticki\Core\Exception;
 
-use Ticki\Core\Model\Cell;
-
+/**
+ * Class ExceptionFactory
+ */
 class ExceptionFactory
 {
     public static function wrongCellException($type)

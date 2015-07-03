@@ -32,7 +32,7 @@ class MainCommand extends Command
 			->setDefinition(array(
 					new InputArgument('sideCount', InputArgument::OPTIONAL, sprintf("Count side of game. You can use one for those: %s", implode(", ", Board::$availableSideCount)), Board::DEFAULT_SIDE_SIZE),
 					new InputArgument('type', InputArgument::OPTIONAL, sprintf("Select type of your cell. You can use '%s' or '%s'", Cell::TIC, Cell::TAC), Cell::TAC),
-					new InputArgument('strategy', InputArgument::OPTIONAL, sprintf("Select strategy. You can use %s", implode(', ', $strategies)), 'simple'),
+					new InputArgument('strategy', InputArgument::OPTIONAL, sprintf("Select strategy. You can use %s", implode(', ', $strategies)), 'intelligent')
 				))
 			->setDescription('Tic tac toe game')
 		;

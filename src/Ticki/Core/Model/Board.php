@@ -135,6 +135,9 @@ class Board
     /**
      * Check for board is finish
      *
+     * @todo: check if no have winner before all cell fill
+     * @todo: check
+     *
      * @return bool
      */
     public function isFinish()
@@ -184,7 +187,7 @@ class Board
 	 *
 	 * @return WinCount
 	 */
-	protected function getWinCountByPositions($positions)
+	public function getWinCountByPositions($positions)
 	{
 		$set = $this->getKitCells();
         $winCount = new WinCount();
@@ -199,6 +202,13 @@ class Board
 		return $winCount;
 	}
 
+    /**
+     * Check for we have winner
+     *
+     * @param WinCount $winCount
+     *
+     * @return bool
+     */
     private function checkWinner(WinCount $winCount)
     {
         if ($winCount->getWinner() === null) {
@@ -221,7 +231,7 @@ class Board
 	 *
 	 * @return array
 	 */
-	protected function getHorizontalPositions($line)
+	public function getHorizontalPositions($line)
 	{
 		$countSide = $this->getSideCount();
 		$array = array();
@@ -239,7 +249,7 @@ class Board
 	 *
 	 * @return array
 	 */
-	protected function getVerticalPositions($row)
+    public function getVerticalPositions($row)
 	{
 		$countSide = $this->getSideCount();
 		$array = array();
@@ -255,7 +265,7 @@ class Board
 	 *
 	 * @return array
 	 */
-	protected function getLeftBisectorPositions()
+    public function getLeftBisectorPositions()
 	{
 		$countSide = $this->getSideCount();
 		$array = array();
@@ -271,7 +281,7 @@ class Board
 	 *
 	 * @return array
 	 */
-	protected function getRightBisectorPositions()
+    public function getRightBisectorPositions()
 	{
 		$countSide = $this->getSideCount();
 		$array = array();

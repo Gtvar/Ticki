@@ -49,8 +49,9 @@ class TicTac
      * @param $strategy
      * @param $sideCount
      * @param $myType
+     * @param int $winCount
      */
-    public function __construct($strategy, $sideCount, $myType)
+    public function __construct($strategy, $sideCount, $myType, $winCount = 0)
     {
 	    if (!in_array($myType, array(Cell::TIC, Cell::TAC))) {
 		    throw ExceptionFactory::wrongCellException($myType);
@@ -60,8 +61,12 @@ class TicTac
 		    throw ExceptionFactory::runtime("Wrong side number");
 	    }
 
+        if ($winCount > $sideCount) {
+            throw ExceptionFactory::runtime("winCount should be less oq equal than sideCount");
+        }
+
         $this->strategy = $this->getStrategyManager()->getByName($strategy);
-        $this->board = new Board($sideCount);
+        $this->board = new Board($sideCount, $winCount);
         $this->myType = $myType;
         $this->oppositeType = Cell::getOppositeType($myType);
     }
